@@ -17,8 +17,8 @@ public static class Fibonacci
         return n switch
                {
                    < 0 => throw new ArgumentOutOfRangeException($"{nameof(n)} must larger than 0"),
-                   1 or 2 => 1,
-                   _ => FibonacciRecursive(n - 1) + FibonacciRecursive(n - 2)
+                   0 => sum,
+                   _ => FibonacciTailRecursive(n - 1, accumulator, sum + accumulator)
                };
     }
     
