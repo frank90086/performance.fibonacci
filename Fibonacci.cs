@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace Test;
 
 public static class Fibonacci
@@ -78,45 +80,53 @@ public static class Fibonacci
         var a = new long[2, 2] { { 1, 1 }, { 1, 0 } };
         var b = MatrixClub(a, n);
         return b[1, 0];
- 
-        static long[,] MatrixClub(long[,] a, int n)
+    }
+    
+    public static long[,] MatrixClub(long[,] a, int n)
+    {
+        switch (n)
         {
-            switch (n)
+            case 1:
+                return a;
+            case 2:
+                return MultiplyMatrix(a, a);
+            default:
             {
-                case 1:
-                    return a;
-                case 2:
-                    return MultiplyMatrix(a, a);
-                default:
+                if (n % 2 == 0)
                 {
-                    if (n % 2 == 0)
-                    {
-                        var temp = MatrixClub(a, n / 2);
-                        return MultiplyMatrix(temp, temp);
-                    }
-                    else
-                    {
-                        var temp = MatrixClub(a, n / 2);
-                        return MultiplyMatrix(MultiplyMatrix(temp, temp), a);
-                    }
+                    var temp = MatrixClub(a, n / 2);
+                    return MultiplyMatrix(temp, temp);
+                }
+                else
+                {
+                    var temp = MatrixClub(a, n / 2);
+                    return MultiplyMatrix(MultiplyMatrix(temp, temp), a);
                 }
             }
         }
- 
-        static long[,] MultiplyMatrix(long[,] a, long[,] b)
+    }
+
+    public static long[,] MultiplyMatrix(long[,] a, long[,] b)
+    {
+        var aRowLength = a.GetLength(0);
+        var aColumnLength = a.GetLength(1);
+        var bRowLength = b.GetLength(0);
+        var bColumnLength = b.GetLength(1);
+
+        if (aColumnLength != bRowLength)
+            throw new ArgumentException("Must follow the vector product rule");
+
+        var c = new long[aRowLength, bColumnLength];
+        for (var i = 0; i < aRowLength; i++)
         {
-            var c = new long[2, 2];
-            for (var i = 0; i < 2; i++)
+            for (var j = 0; j < bColumnLength; j++)
             {
-                for (var j = 0; j < 2; j++)
+                for (var k = 0; k < aColumnLength; k++)
                 {
-                    for (var k = 0; k < 2; k++)
-                    {
-                        c[i, j] += a[i, k] * b[k, j];
-                    }
+                    c[i, j] += a[i, k] * b[k, j];
                 }
             }
-            return c;
         }
+        return c;
     }
 }

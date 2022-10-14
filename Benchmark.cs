@@ -5,8 +5,32 @@ namespace Test;
 [MemoryDiagnoser(false)]
 public class Benchmark
 {
-    [Params(10, 50)] 
+    // [Params(10, 50)]
     public int Size { get; set; }
+
+    public IEnumerable<object[]> Data()
+    {
+        yield return new object[]
+                     {
+                         new long[,] { { 1, 1 }, { 1, 0 } }, 
+                         new long[,] { { 1, 1 }, { 1, 0 } }
+                     };
+        yield return new object[]
+                     {
+                         new long[,] { { 1, 0, 1 }, { 1, 0, 1 }, { 1, 0, 1 } },
+                         new long[,] { { 1, 0, 1 }, { 1, 0, 1 }, { 1, 0, 1 } }
+                     };
+        yield return new object[]
+                     {
+                         new long[,] { { 1, 1, 1, 1 }, { 1, 0, 1, 0 }, { 1, 1, 1, 1 }, { 1, 0, 1, 0 } },
+                         new long[,] { { 1, 1, 1, 1 }, { 1, 0, 1, 0 }, { 1, 1, 1, 1 }, { 1, 0, 1, 0 } }
+                     };
+        yield return new object[]
+                     {
+                         new long[,] { { 1, 1, 1, 1 }, { 1, 0, 1, 0 } },
+                         new long[,] { { 1, 1 }, { 1, 0 }, { 1, 1 }, { 1, 0 } }
+                     };
+    }
 
     //[Benchmark]
     public void Recursive()
@@ -14,21 +38,28 @@ public class Benchmark
         var result = Fibonacci.FibonacciRecursive(Size);
     }
     
-    [Benchmark]
+    //[Benchmark]
     public void Queue()
     {
         var result = Fibonacci.FibonacciQueue(Size);
     }
     
-    [Benchmark]
+    //[Benchmark]
     public void Stack()
     {
         var result = Fibonacci.FibonacciStack(Size);
     }
     
-    [Benchmark]
+    //[Benchmark]
     public void Matrix()
     {
         var result = Fibonacci.FibonacciMatrix(Size);
+    }
+
+    [Benchmark]
+    [ArgumentsSource(nameof(Data))]
+    public void MultiplyMatrix(long[,] aMatrix, long[,] bMatrix)
+    {
+        var result = Fibonacci.MultiplyMatrix(aMatrix, bMatrix);
     }
 }
